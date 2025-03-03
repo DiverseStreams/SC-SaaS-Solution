@@ -32,16 +32,16 @@ This plan adapts our original implementation approach to leverage the nextjs/saa
 
 ## Phase 2: AWS Infrastructure
 
-- [ ] Step 4: Set up AWS CDK project in a subdirectory
+- [X] Step 4: Set up AWS CDK project in a subdirectory
   - **Task**: Create and configure AWS CDK for infrastructure as code
   - **Files**:
     - `cdk/lib/infra-stack.ts`: Main CDK stack
     - `cdk/bin/cdk.ts`: CDK entry point
     - `cdk/package.json`: CDK dependencies
   - **Step Dependencies**: Step 3
-  - **User Instructions**: Run `mkdir cdk && cd cdk && npx aws-cdk init app --language typescript && npm install @aws-sdk/client-s3 @aws-sdk/client-dynamodb @aws-sdk/client-lambda @aws-sdk/client-cognito-identity @aws-sdk/client-secrets-manager`
+  - **User Instructions**: Run `cd cdk && npm install` to install CDK dependencies
 
-- [ ] Step 5: Configure S3 buckets for file storage
+- [X] Step 5: Configure S3 buckets for file storage
   - **Task**: Create S3 buckets for CSV file uploads and storage
   - **Files**:
     - `cdk/lib/storage/s3-buckets.ts`: S3 bucket configuration
@@ -49,7 +49,7 @@ This plan adapts our original implementation approach to leverage the nextjs/saa
   - **Step Dependencies**: Step 4
   - **User Instructions**: None
 
-- [ ] Step 6: Set up DynamoDB tables
+- [X] Step 6: Set up DynamoDB tables
   - **Task**: Create DynamoDB tables for user data, analysis results, and configuration
   - **Files**:
     - `cdk/lib/storage/dynamodb-tables.ts`: DynamoDB table definitions

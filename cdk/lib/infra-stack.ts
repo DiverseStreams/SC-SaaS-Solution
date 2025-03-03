@@ -1,14 +1,14 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
-import * as iam from 'aws-cdk-lib/aws-iam';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { S3BucketConstruct } from './storage/s3-buckets';
 import { DynamoDBTablesConstruct } from './storage/dynamodb-tables';
+import { LambdaFunctionsConstruct } from './lambda/index';
 
 export class SupplyChainInfraStack extends cdk.Stack {
   // Public properties to expose resources to other stacks if needed
@@ -19,6 +19,9 @@ export class SupplyChainInfraStack extends cdk.Stack {
   public readonly usersTable: dynamodb.Table;
   public readonly analysisTable: dynamodb.Table;
   public readonly scenariosTable: dynamodb.Table;
+  public readonly cogAnalysisFunction: lambda.Function;
+  public readonly geocodingFunction: lambda.Function;
+  public readonly openCageSecret: secretsmanager.Secret;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -106,69 +109,21 @@ export class SupplyChainInfraStack extends cdk.Stack {
     // Lambda Functions
     // ============================================================
     
-    // Common Lambda role with basic permissions
-    const lambdaRole = new iam.Role(this, 'LambdaRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'),
-      ],
+    // Create Lambda functions using the modular construct
+    const lambdaFunctions = new LambdaFunctionsConstruct(this, 'LambdaFunctions', {
+      environment,
+      appName,
+      csvBucket: this.csvBucket,
+      publicAssetsBucket: this.publicAssetsBucket,
+      usersTable: this.usersTable,
+      analysisTable: this.analysisTable,
+      scenariosTable: this.scenariosTable,
     });
     
-    // Add S3 permissions
-    this.csvBucket.grantReadWrite(lambdaRole);
-    this.publicAssetsBucket.grantRead(lambdaRole);
-    
-    // Add DynamoDB permissions
-    this.usersTable.grantReadWriteData(lambdaRole);
-    this.analysisTable.grantReadWriteData(lambdaRole);
-    this.scenariosTable.grantReadWriteData(lambdaRole);
-    
-    // Center of Gravity analysis Lambda function
-    const cogAnalysisLambda = new lambda.Function(this, 'CogAnalysisLambda', {
-      functionName: `${appName}-cog-analysis-${environment}`,
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('lambda/cog-analysis'), // Placeholder, we'll create this later
-      timeout: cdk.Duration.minutes(5),
-      memorySize: 1024,
-      role: lambdaRole,
-      environment: {
-        USERS_TABLE: this.usersTable.tableName,
-        ANALYSIS_TABLE: this.analysisTable.tableName,
-        SCENARIOS_TABLE: this.scenariosTable.tableName,
-        CSV_BUCKET: this.csvBucket.bucketName,
-      },
-    });
-    
-    // Geocoding Lambda function
-    const geocodingLambda = new lambda.Function(this, 'GeocodingLambda', {
-      functionName: `${appName}-geocoding-${environment}`,
-      runtime: lambda.Runtime.NODEJS_18_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('lambda/geocoding'), // Placeholder, we'll create this later
-      timeout: cdk.Duration.minutes(1),
-      memorySize: 256,
-      role: lambdaRole,
-      environment: {
-        USERS_TABLE: this.usersTable.tableName,
-        ANALYSIS_TABLE: this.analysisTable.tableName,
-        SCENARIOS_TABLE: this.scenariosTable.tableName,
-        CSV_BUCKET: this.csvBucket.bucketName,
-      },
-    });
-
-    // ============================================================
-    // Secrets Manager for API Keys
-    // ============================================================
-    
-    // Secret for OpenCage API key
-    const openCageSecret = new secretsmanager.Secret(this, 'OpenCageApiKey', {
-      secretName: `${appName}/opencage-api-key-${environment}`,
-      description: 'API key for OpenCage Geocoding service',
-    });
-    
-    // Grant Lambda functions access to secrets
-    openCageSecret.grantRead(geocodingLambda);
+    // Store references to Lambda resources
+    this.cogAnalysisFunction = lambdaFunctions.cogAnalysisFunction;
+    this.geocodingFunction = lambdaFunctions.geocodingFunction;
+    this.openCageSecret = lambdaFunctions.openCageSecret;
     
     // ============================================================
     // API Gateway
@@ -193,13 +148,13 @@ export class SupplyChainInfraStack extends cdk.Stack {
     
     // API resources and integrations
     const analysisResource = api.root.addResource('analysis');
-    analysisResource.addMethod('POST', new apigateway.LambdaIntegration(cogAnalysisLambda), {
+    analysisResource.addMethod('POST', new apigateway.LambdaIntegration(this.cogAnalysisFunction), {
       authorizer,
       authorizationType: apigateway.AuthorizationType.COGNITO,
     });
     
     const geocodingResource = api.root.addResource('geocoding');
-    geocodingResource.addMethod('POST', new apigateway.LambdaIntegration(geocodingLambda), {
+    geocodingResource.addMethod('POST', new apigateway.LambdaIntegration(this.geocodingFunction), {
       authorizer,
       authorizationType: apigateway.AuthorizationType.COGNITO,
     });

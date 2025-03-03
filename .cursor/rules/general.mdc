@@ -1,0 +1,9 @@
+---
+description: Follow these rules for every request.
+globs: 
+---
+- We are building a supply Chain SaaS application
+- Find the steps in [IMPLEMENTATION_PLAN.md](mdc:IMPLEMENTATION_PLAN.md)
+- Work on whatever step(s) I tell you to work on and only work on those steps at once
+- once those steps are done, mark as completed 
+- Then stop, I will give you further instructions.

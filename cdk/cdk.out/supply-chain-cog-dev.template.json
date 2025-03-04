@@ -1,0 +1,1795 @@
+{
+ "Description": "Supply Chain Center of Gravity Optimization Tool Infrastructure",
+ "Resources": {
+  "S3BucketsCSVUploadsBucketD0AD0A77": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "supply-chain-cog-csv-uploads-dev-615299755994",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "GET",
+        "PUT",
+        "POST"
+       ],
+       "AllowedOrigins": [
+        "http://localhost:3000"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "AbortIncompleteMultipartUpload": {
+        "DaysAfterInitiation": 7
+       },
+       "ExpirationInDays": 30,
+       "Status": "Enabled"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/S3Buckets/CSVUploadsBucket/Resource"
+   }
+  },
+  "S3BucketsPublicAssetsBucketA654415B": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "supply-chain-cog-public-assets-dev-615299755994",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "GET"
+       ],
+       "AllowedOrigins": [
+        "http://localhost:3000"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": false,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": false
+    },
+    "WebsiteConfiguration": {
+     "IndexDocument": "index.html"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucket/Resource"
+   }
+  },
+  "S3BucketsPublicAssetsBucketPolicy715454F1": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "S3BucketsPublicAssetsBucketA654415B"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:GetObject",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "S3BucketsPublicAssetsBucketA654415B",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucketPolicy/Resource"
+   }
+  },
+  "DynamoDBTablesUsersTable413E28CF": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "TableName": "supply-chain-cog-users-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/DynamoDBTables/UsersTable/Resource"
+   }
+  },
+  "DynamoDBTablesAnalysisTable8AFEBDD5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "userId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "locationId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "user-index",
+      "KeySchema": [
+       {
+        "AttributeName": "userId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "location-index",
+      "KeySchema": [
+       {
+        "AttributeName": "locationId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "createdAt",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "TableName": "supply-chain-cog-analysis-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/DynamoDBTables/AnalysisTable/Resource"
+   }
+  },
+  "DynamoDBTablesScenariosTable71D451E1": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "userId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "businessDimension",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "user-index",
+      "KeySchema": [
+       {
+        "AttributeName": "userId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "business-dimension-index",
+      "KeySchema": [
+       {
+        "AttributeName": "businessDimension",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "createdAt",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "TableName": "supply-chain-cog-scenarios-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/DynamoDBTables/ScenariosTable/Resource"
+   }
+  },
+  "UserPool6BA7E5F2": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": false
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": true,
+      "RequireUppercase": true
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "name",
+      "Required": false
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "supply-chain-cog-user-pool-dev",
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/UserPool/Resource"
+   }
+  },
+  "UserPoolUserPoolClient40176907": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "implicit",
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "email",
+     "openid",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "http://localhost:3000/api/auth/callback/cognito"
+    ],
+    "ClientName": "supply-chain-cog-client-dev",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "LogoutURLs": [
+     "http://localhost:3000"
+    ],
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/UserPool/UserPoolClient/Resource"
+   }
+  },
+  "LambdaFunctionsOpenCageApiKey5F9E9431": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "API key for OpenCage Geocoding service",
+    "GenerateSecretString": {},
+    "Name": "supply-chain-cog/opencage-api-key-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/OpenCageApiKey/Resource"
+   }
+  },
+  "LambdaFunctionsLambdaExecutionRole85D79140": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "RoleName": "supply-chain-cog-lambda-role-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/Resource"
+   }
+  },
+  "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "S3BucketsCSVUploadsBucketD0AD0A77",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "S3BucketsCSVUploadsBucketD0AD0A77",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "S3BucketsPublicAssetsBucketA654415B",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "S3BucketsPublicAssetsBucketA654415B",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DynamoDBTablesUsersTable413E28CF",
+          "Arn"
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DynamoDBTablesAnalysisTable8AFEBDD5",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DynamoDBTablesAnalysisTable8AFEBDD5",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "DynamoDBTablesScenariosTable71D451E1",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "DynamoDBTablesScenariosTable71D451E1",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E",
+    "Roles": [
+     {
+      "Ref": "LambdaFunctionsLambdaExecutionRole85D79140"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "LambdaFunctionsSharedLayer7706F079": {
+   "Type": "AWS::Lambda::LayerVersion",
+   "Properties": {
+    "CompatibleRuntimes": [
+     "nodejs18.x"
+    ],
+    "Content": {
+     "S3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+     "S3Key": "93b99e790463ce3ee70210e9b6f6b50834eff40adca1098afaa1863e7299ab0a.zip"
+    },
+    "Description": "Shared utilities for Lambda functions"
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer/Resource",
+    "aws:asset:path": "asset.93b99e790463ce3ee70210e9b6f6b50834eff40adca1098afaa1863e7299ab0a",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Content"
+   }
+  },
+  "LambdaFunctionsCogAnalysisFunction573EF7C4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+     "S3Key": "a032dfd67de037d3a53c1995368f816b90d72faa846a20268163f6c990fd8248.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "USERS_TABLE": {
+       "Ref": "DynamoDBTablesUsersTable413E28CF"
+      },
+      "ANALYSIS_TABLE": {
+       "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+      },
+      "SCENARIOS_TABLE": {
+       "Ref": "DynamoDBTablesScenariosTable71D451E1"
+      },
+      "CSV_BUCKET": {
+       "Ref": "S3BucketsCSVUploadsBucketD0AD0A77"
+      },
+      "CACHE_RESULTS": "true",
+      "MAX_LOCATIONS": "10000"
+     }
+    },
+    "FunctionName": "supply-chain-cog-cog-analysis-dev",
+    "Handler": "index.handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsSharedLayer7706F079"
+     }
+    ],
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsLambdaExecutionRole85D79140",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E",
+    "LambdaFunctionsLambdaExecutionRole85D79140"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Resource",
+    "aws:asset:path": "asset.a032dfd67de037d3a53c1995368f816b90d72faa846a20268163f6c990fd8248",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LambdaFunctionsGeocodingFunctionA56FC6BE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+     "S3Key": "c55b7419389de4e42b2577f0fb4a827459669f6b1e9c23847651d6e7bfa17d52.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "USERS_TABLE": {
+       "Ref": "DynamoDBTablesUsersTable413E28CF"
+      },
+      "ANALYSIS_TABLE": {
+       "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+      },
+      "SCENARIOS_TABLE": {
+       "Ref": "DynamoDBTablesScenariosTable71D451E1"
+      },
+      "CSV_BUCKET": {
+       "Ref": "S3BucketsCSVUploadsBucketD0AD0A77"
+      },
+      "OPENCAGE_SECRET_NAME": {
+       "Fn::Join": [
+        "-",
+        [
+         {
+          "Fn::Select": [
+           0,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Fn::Select": [
+           1,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Fn::Select": [
+           2,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Fn::Select": [
+           3,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Fn::Select": [
+           4,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "Fn::Select": [
+           5,
+           {
+            "Fn::Split": [
+             "-",
+             {
+              "Fn::Select": [
+               6,
+               {
+                "Fn::Split": [
+                 ":",
+                 {
+                  "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                 }
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       ]
+      },
+      "CACHE_RESULTS": "true",
+      "MAX_BATCH_SIZE": "25",
+      "CACHE_TTL_DAYS": "30"
+     }
+    },
+    "FunctionName": "supply-chain-cog-geocoding-dev",
+    "Handler": "index.handler",
+    "Layers": [
+     {
+      "Ref": "LambdaFunctionsSharedLayer7706F079"
+     }
+    ],
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsLambdaExecutionRole85D79140",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs18.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E",
+    "LambdaFunctionsLambdaExecutionRole85D79140"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Resource",
+    "aws:asset:path": "asset.c55b7419389de4e42b2577f0fb4a827459669f6b1e9c23847651d6e7bfa17d52",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "SupplyChainApiF2EEF487": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "API for Supply Chain Optimization Tool",
+    "Name": "supply-chain-cog-api-dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Resource"
+   }
+  },
+  "SupplyChainApiCloudWatchRole284EB9E9": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/CloudWatchRole/Resource"
+   }
+  },
+  "SupplyChainApiAccount976CE95C": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "SupplyChainApiCloudWatchRole284EB9E9",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "SupplyChainApiF2EEF487"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Account"
+   }
+  },
+  "SupplyChainApiDeployment1D9099DE8c37354121f809c677ebea0ba90d868d": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "API for Supply Chain Optimization Tool",
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "DependsOn": [
+    "SupplyChainApianalysisOPTIONS23223F29",
+    "SupplyChainApianalysisPOST8784AD2B",
+    "SupplyChainApianalysis5CAF06DA",
+    "SupplyChainApigeocodingOPTIONS1AF3F390",
+    "SupplyChainApigeocodingPOST5902E22F",
+    "SupplyChainApigeocodingA2004A2B",
+    "SupplyChainApiOPTIONS573C7CFF"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Deployment/Resource"
+   }
+  },
+  "SupplyChainApiDeploymentStageprodE1CB3397": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "SupplyChainApiDeployment1D9099DE8c37354121f809c677ebea0ba90d868d"
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "SupplyChainApiAccount976CE95C"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "SupplyChainApiOPTIONS573C7CFF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "SupplyChainApiF2EEF487",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/OPTIONS/Resource"
+   }
+  },
+  "SupplyChainApianalysis5CAF06DA": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "SupplyChainApiF2EEF487",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "analysis",
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/Resource"
+   }
+  },
+  "SupplyChainApianalysisOPTIONS23223F29": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "SupplyChainApianalysis5CAF06DA"
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/OPTIONS/Resource"
+   }
+  },
+  "SupplyChainApianalysisPOSTApiPermissionsupplychaincogdevSupplyChainApi0E51D2CEPOSTanalysis58F9A1EF": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCogAnalysisFunction573EF7C4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:615299755994:",
+       {
+        "Ref": "SupplyChainApiF2EEF487"
+       },
+       "/",
+       {
+        "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+       },
+       "/POST/analysis"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis"
+   }
+  },
+  "SupplyChainApianalysisPOSTApiPermissionTestsupplychaincogdevSupplyChainApi0E51D2CEPOSTanalysisE9FEB0E3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsCogAnalysisFunction573EF7C4",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:615299755994:",
+       {
+        "Ref": "SupplyChainApiF2EEF487"
+       },
+       "/test-invoke-stage/POST/analysis"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis"
+   }
+  },
+  "SupplyChainApianalysisPOST8784AD2B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsCogAnalysisFunction573EF7C4",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "SupplyChainApianalysis5CAF06DA"
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/Resource"
+   }
+  },
+  "SupplyChainApigeocodingA2004A2B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "SupplyChainApiF2EEF487",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "geocoding",
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/Resource"
+   }
+  },
+  "SupplyChainApigeocodingOPTIONS1AF3F390": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'86400'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "SupplyChainApigeocodingA2004A2B"
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/OPTIONS/Resource"
+   }
+  },
+  "SupplyChainApigeocodingPOSTApiPermissionsupplychaincogdevSupplyChainApi0E51D2CEPOSTgeocoding8B9F3E01": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGeocodingFunctionA56FC6BE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:615299755994:",
+       {
+        "Ref": "SupplyChainApiF2EEF487"
+       },
+       "/",
+       {
+        "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+       },
+       "/POST/geocoding"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding"
+   }
+  },
+  "SupplyChainApigeocodingPOSTApiPermissionTestsupplychaincogdevSupplyChainApi0E51D2CEPOSTgeocoding0C504376": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "LambdaFunctionsGeocodingFunctionA56FC6BE",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:615299755994:",
+       {
+        "Ref": "SupplyChainApiF2EEF487"
+       },
+       "/test-invoke-stage/POST/geocoding"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding"
+   }
+  },
+  "SupplyChainApigeocodingPOST5902E22F": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "ApiAuthorizer68095F41"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "LambdaFunctionsGeocodingFunctionA56FC6BE",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "SupplyChainApigeocodingA2004A2B"
+    },
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/Resource"
+   }
+  },
+  "ApiAuthorizer68095F41": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "supplychaincogdevApiAuthorizer92F613A5",
+    "ProviderARNs": [
+     {
+      "Fn::GetAtt": [
+       "UserPool6BA7E5F2",
+       "Arn"
+      ]
+     }
+    ],
+    "RestApiId": {
+     "Ref": "SupplyChainApiF2EEF487"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/ApiAuthorizer/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQQW/CMAyFfwv3kI1y2bUw7bRpqGy7Ijf1SqBNqtgd6qL89ylNoezk7/lZ8YszuXpaydUCLrRU1XnZ6FL6PYM6C7jQwdNa+k2vzshi+20mSmVnG62GuT3pJDZAGEQ1GGhtVUr/AWWDcXaEIJStjWYr/Seh21nbRO/GV9g2Gg3fW6kTBKFyyNSCgRqd9PtRx8lEQWhopS9s2jrWOXCiIBpoywqkf4UB3Rc60tZE/59+6Y3iybjnHbpWUxwJgtYHIEImmccioNM1MF5gkL5A4rzTY4wZc6Vsb1g8Y9fYoZ2+eaf2DPWYPUGBZHunMB5WvCEfbRXNia7utGTidOPr6Sjv+Wid/kU3BripEKJ+77nreX5p/EjcrU0dhLEVyhM9/GSZXGXycXEirZeuN6xblEWqf8bC5LBNAgAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "supply-chain-cog-dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "S3BucketsCSVBucketName109EEDCA": {
+   "Description": "Name of the S3 bucket for CSV uploads",
+   "Value": {
+    "Ref": "S3BucketsCSVUploadsBucketD0AD0A77"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-csv-bucket-name-dev"
+   }
+  },
+  "S3BucketsPublicAssetsBucketName40B42B56": {
+   "Description": "Name of the S3 bucket for public assets",
+   "Value": {
+    "Ref": "S3BucketsPublicAssetsBucketA654415B"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-public-assets-bucket-name-dev"
+   }
+  },
+  "DynamoDBTablesUsersTableName9F65B9FF": {
+   "Description": "Name of the DynamoDB table for users",
+   "Value": {
+    "Ref": "DynamoDBTablesUsersTable413E28CF"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-users-table-name-dev"
+   }
+  },
+  "DynamoDBTablesAnalysisTableName3D3E135E": {
+   "Description": "Name of the DynamoDB table for analysis results",
+   "Value": {
+    "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-analysis-table-name-dev"
+   }
+  },
+  "DynamoDBTablesScenariosTableName3F8386CE": {
+   "Description": "Name of the DynamoDB table for scenarios",
+   "Value": {
+    "Ref": "DynamoDBTablesScenariosTable71D451E1"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-scenarios-table-name-dev"
+   }
+  },
+  "LambdaFunctionsCogAnalysisFunctionName7EEB0C96": {
+   "Description": "Name of the center of gravity analysis Lambda function",
+   "Value": {
+    "Ref": "LambdaFunctionsCogAnalysisFunction573EF7C4"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-cog-analysis-function-name-dev"
+   }
+  },
+  "LambdaFunctionsGeocodingFunctionName5D1B0C49": {
+   "Description": "Name of the geocoding Lambda function",
+   "Value": {
+    "Ref": "LambdaFunctionsGeocodingFunctionA56FC6BE"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-geocoding-function-name-dev"
+   }
+  },
+  "LambdaFunctionsOpenCageSecretNameE4D02783": {
+   "Description": "Name of the OpenCage API key secret",
+   "Value": {
+    "Fn::Join": [
+     "-",
+     [
+      {
+       "Fn::Select": [
+        0,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Fn::Select": [
+        1,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Fn::Select": [
+        2,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Fn::Select": [
+        3,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Fn::Select": [
+        4,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Fn::Select": [
+        5,
+        {
+         "Fn::Split": [
+          "-",
+          {
+           "Fn::Select": [
+            6,
+            {
+             "Fn::Split": [
+              ":",
+              {
+               "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "supply-chain-cog-opencage-secret-name-dev"
+   }
+  },
+  "SupplyChainApiEndpoint31183C30": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "SupplyChainApiF2EEF487"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "URL of the API Gateway",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "SupplyChainApiF2EEF487"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+      },
+      "/"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "supply-chain-cog-api-url-dev"
+   }
+  },
+  "UserPoolId": {
+   "Description": "ID of the Cognito User Pool",
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-user-pool-id-dev"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "ID of the Cognito User Pool Client",
+   "Value": {
+    "Ref": "UserPoolUserPoolClient40176907"
+   },
+   "Export": {
+    "Name": "supply-chain-cog-user-pool-client-id-dev"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

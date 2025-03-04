@@ -1,0 +1,371 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "supply-chain-cog-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "supply-chain-cog-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "supply-chain-cog-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://615299755994/us-east-1",
+      "properties": {
+        "templateFile": "supply-chain-cog-dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "dev",
+          "ManagedBy": "CDK",
+          "Project": "supply-chain-cog"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::615299755994:role/cdk-hnb659fds-deploy-role-615299755994-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::615299755994:role/cdk-hnb659fds-cfn-exec-role-615299755994-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-615299755994-us-east-1/882b519edf38e3738b8b405a2aa3447812eddddfdcacbd1a68e39a8ec227f119.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "supply-chain-cog-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::615299755994:role/cdk-hnb659fds-lookup-role-615299755994-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "supply-chain-cog-dev.assets"
+      ],
+      "metadata": {
+        "/supply-chain-cog-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "supply-chain-cog"
+              }
+            ]
+          }
+        ],
+        "/supply-chain-cog-dev/S3Buckets/CSVUploadsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3BucketsCSVUploadsBucketD0AD0A77"
+          }
+        ],
+        "/supply-chain-cog-dev/S3Buckets/PublicAssetsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3BucketsPublicAssetsBucketA654415B"
+          }
+        ],
+        "/supply-chain-cog-dev/S3Buckets/PublicAssetsBucketPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3BucketsPublicAssetsBucketPolicy715454F1"
+          }
+        ],
+        "/supply-chain-cog-dev/S3Buckets/CSVBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3BucketsCSVBucketName109EEDCA"
+          }
+        ],
+        "/supply-chain-cog-dev/S3Buckets/PublicAssetsBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "S3BucketsPublicAssetsBucketName40B42B56"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/UsersTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DynamoDBTablesUsersTable413E28CF"
+            }
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/UsersTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesUsersTable413E28CF"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/AnalysisTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+            }
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/AnalysisTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesAnalysisTable8AFEBDD5"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/ScenariosTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DynamoDBTablesScenariosTable71D451E1"
+            }
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/ScenariosTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesScenariosTable71D451E1"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/UsersTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesUsersTableName9F65B9FF"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/AnalysisTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesAnalysisTableName3D3E135E"
+          }
+        ],
+        "/supply-chain-cog-dev/DynamoDBTables/ScenariosTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBTablesScenariosTableName3F8386CE"
+          }
+        ],
+        "/supply-chain-cog-dev/UserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPool6BA7E5F2"
+          }
+        ],
+        "/supply-chain-cog-dev/UserPool/UserPoolClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolUserPoolClient40176907"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/OpenCageApiKey/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsOpenCageApiKey5F9E9431"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsLambdaExecutionRole85D79140"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/SharedLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsSharedLayer7706F079"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCogAnalysisFunction573EF7C4"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGeocodingFunctionA56FC6BE"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunctionName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsCogAnalysisFunctionName7EEB0C96"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/GeocodingFunctionName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsGeocodingFunctionName5D1B0C49"
+          }
+        ],
+        "/supply-chain-cog-dev/LambdaFunctions/OpenCageSecretName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaFunctionsOpenCageSecretNameE4D02783"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiF2EEF487"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiCloudWatchRole284EB9E9"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiAccount976CE95C"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiDeployment1D9099DE8c37354121f809c677ebea0ba90d868d"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiDeploymentStageprodE1CB3397"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiEndpoint31183C30"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApiOPTIONS573C7CFF"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/analysis/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApianalysis5CAF06DA"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/analysis/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApianalysisOPTIONS23223F29"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApianalysisPOSTApiPermissionsupplychaincogdevSupplyChainApi0E51D2CEPOSTanalysis58F9A1EF"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApianalysisPOSTApiPermissionTestsupplychaincogdevSupplyChainApi0E51D2CEPOSTanalysisE9FEB0E3"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApianalysisPOST8784AD2B"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/geocoding/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApigeocodingA2004A2B"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/geocoding/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApigeocodingOPTIONS1AF3F390"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApigeocodingPOSTApiPermissionsupplychaincogdevSupplyChainApi0E51D2CEPOSTgeocoding8B9F3E01"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApigeocodingPOSTApiPermissionTestsupplychaincogdevSupplyChainApi0E51D2CEPOSTgeocoding0C504376"
+          }
+        ],
+        "/supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SupplyChainApigeocodingPOST5902E22F"
+          }
+        ],
+        "/supply-chain-cog-dev/ApiAuthorizer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiAuthorizer68095F41"
+          }
+        ],
+        "/supply-chain-cog-dev/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/supply-chain-cog-dev/UserPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolId"
+          }
+        ],
+        "/supply-chain-cog-dev/UserPoolClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolClientId"
+          }
+        ],
+        "/supply-chain-cog-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/supply-chain-cog-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/supply-chain-cog-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "supply-chain-cog-dev"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

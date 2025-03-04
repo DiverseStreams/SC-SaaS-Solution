@@ -5,6 +5,8 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as path from 'path';
+import { Duration } from 'aws-cdk-lib';
 
 /**
  * Properties for LambdaFunctionsConstruct
@@ -122,21 +124,20 @@ export class LambdaFunctionsConstruct extends Construct {
       functionName: `${appName}-cog-analysis-${environment}`,
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('lambda/cog-analysis'),
-      timeout: cdk.Duration.seconds(60), // Reduced from 5 minutes to 1 minute
-      memorySize: 512, // Reduced from 1024MB to 512MB for cost savings
-      role: this.lambdaRole,
-      layers: [lambdaLayer],
-      reservedConcurrentExecutions: 10, // Limit concurrent executions to control costs
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda/cog-analysis')),
+      memorySize: 512, // Reduced from 1024 for cost optimization
+      timeout: Duration.seconds(60), // Reduced from 5 minutes for cost control
       environment: {
         ENVIRONMENT: environment,
         USERS_TABLE: usersTable.tableName,
         ANALYSIS_TABLE: analysisTable.tableName,
         SCENARIOS_TABLE: scenariosTable.tableName,
         CSV_BUCKET: csvBucket.bucketName,
-        CACHE_RESULTS: 'true', // Enable caching for cost efficiency
-        MAX_LOCATIONS: '10000', // Limit the number of locations to process
+        CACHE_RESULTS: 'true', // Enable caching to reduce computation costs
+        MAX_LOCATIONS: '10000', // Limit max locations to control costs
       },
+      role: this.lambdaRole,
+      layers: [lambdaLayer],
     });
     
     // Geocoding Lambda - Cost-optimized
@@ -144,12 +145,9 @@ export class LambdaFunctionsConstruct extends Construct {
       functionName: `${appName}-geocoding-${environment}`,
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('lambda/geocoding'),
-      timeout: cdk.Duration.seconds(30), // Reduced from 1 minute to 30 seconds
-      memorySize: 256, // Maintained at 256MB as this is sufficient for geocoding
-      role: this.lambdaRole,
-      layers: [lambdaLayer],
-      reservedConcurrentExecutions: 5, // Limit concurrent executions to control costs
+      code: lambda.Code.fromAsset(path.join(__dirname, '../../lambda/geocoding')),
+      memorySize: 256, // Reduced from default for cost optimization
+      timeout: Duration.seconds(30),
       environment: {
         ENVIRONMENT: environment,
         USERS_TABLE: usersTable.tableName,
@@ -157,10 +155,12 @@ export class LambdaFunctionsConstruct extends Construct {
         SCENARIOS_TABLE: scenariosTable.tableName,
         CSV_BUCKET: csvBucket.bucketName,
         OPENCAGE_SECRET_NAME: this.openCageSecret.secretName,
-        CACHE_RESULTS: 'true', // Enable caching for cost efficiency
-        MAX_BATCH_SIZE: '25', // Limit batch size for geocoding to stay within free tier limits
-        CACHE_TTL_DAYS: '30', // Store geocoding results for 30 days to reduce API calls
+        CACHE_RESULTS: 'true', // Enable caching to reduce API calls
+        MAX_BATCH_SIZE: '25', // Control batch size for API costs
+        CACHE_TTL_DAYS: '30', // Cache results for 30 days
       },
+      role: this.lambdaRole,
+      layers: [lambdaLayer],
     });
     
     // Add CloudFormation outputs

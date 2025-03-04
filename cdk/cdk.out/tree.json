@@ -1,0 +1,2184 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "supply-chain-cog-dev": {
+        "id": "supply-chain-cog-dev",
+        "path": "supply-chain-cog-dev",
+        "children": {
+          "S3Buckets": {
+            "id": "S3Buckets",
+            "path": "supply-chain-cog-dev/S3Buckets",
+            "children": {
+              "CSVUploadsBucket": {
+                "id": "CSVUploadsBucket",
+                "path": "supply-chain-cog-dev/S3Buckets/CSVUploadsBucket",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/S3Buckets/CSVUploadsBucket/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:props": {
+                        "bucketEncryption": {
+                          "serverSideEncryptionConfiguration": [
+                            {
+                              "serverSideEncryptionByDefault": {
+                                "sseAlgorithm": "AES256"
+                              }
+                            }
+                          ]
+                        },
+                        "bucketName": "supply-chain-cog-csv-uploads-dev-615299755994",
+                        "corsConfiguration": {
+                          "corsRules": [
+                            {
+                              "maxAge": 3000,
+                              "allowedHeaders": [
+                                "*"
+                              ],
+                              "allowedMethods": [
+                                "GET",
+                                "PUT",
+                                "POST"
+                              ],
+                              "allowedOrigins": [
+                                "http://localhost:3000"
+                              ]
+                            }
+                          ]
+                        },
+                        "lifecycleConfiguration": {
+                          "rules": [
+                            {
+                              "abortIncompleteMultipartUpload": {
+                                "daysAfterInitiation": 7
+                              },
+                              "expirationInDays": 30,
+                              "status": "Enabled"
+                            }
+                          ]
+                        },
+                        "publicAccessBlockConfiguration": {
+                          "blockPublicAcls": true,
+                          "blockPublicPolicy": true,
+                          "ignorePublicAcls": true,
+                          "restrictPublicBuckets": true
+                        },
+                        "versioningConfiguration": {
+                          "status": "Enabled"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "PublicAssetsBucket": {
+                "id": "PublicAssetsBucket",
+                "path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucket",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucket/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                      "aws:cdk:cloudformation:props": {
+                        "bucketEncryption": {
+                          "serverSideEncryptionConfiguration": [
+                            {
+                              "serverSideEncryptionByDefault": {
+                                "sseAlgorithm": "AES256"
+                              }
+                            }
+                          ]
+                        },
+                        "bucketName": "supply-chain-cog-public-assets-dev-615299755994",
+                        "corsConfiguration": {
+                          "corsRules": [
+                            {
+                              "maxAge": 3000,
+                              "allowedHeaders": [
+                                "*"
+                              ],
+                              "allowedMethods": [
+                                "GET"
+                              ],
+                              "allowedOrigins": [
+                                "http://localhost:3000"
+                              ]
+                            }
+                          ]
+                        },
+                        "publicAccessBlockConfiguration": {
+                          "blockPublicAcls": true,
+                          "blockPublicPolicy": false,
+                          "ignorePublicAcls": true,
+                          "restrictPublicBuckets": false
+                        },
+                        "websiteConfiguration": {
+                          "indexDocument": "index.html"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.Bucket",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "PublicAssetsBucketPolicy": {
+                "id": "PublicAssetsBucketPolicy",
+                "path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucketPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucketPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "S3BucketsPublicAssetsBucketA654415B"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "s3:GetObject",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "AWS": "*"
+                              },
+                              "Resource": {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "S3BucketsPublicAssetsBucketA654415B",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "/*"
+                                  ]
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "CSVBucketName": {
+                "id": "CSVBucketName",
+                "path": "supply-chain-cog-dev/S3Buckets/CSVBucketName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "PublicAssetsBucketName": {
+                "id": "PublicAssetsBucketName",
+                "path": "supply-chain-cog-dev/S3Buckets/PublicAssetsBucketName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "DynamoDBTables": {
+            "id": "DynamoDBTables",
+            "path": "supply-chain-cog-dev/DynamoDBTables",
+            "children": {
+              "UsersTable": {
+                "id": "UsersTable",
+                "path": "supply-chain-cog-dev/DynamoDBTables/UsersTable",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/UsersTable/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "id",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "keySchema": [
+                          {
+                            "attributeName": "id",
+                            "keyType": "HASH"
+                          }
+                        ],
+                        "pointInTimeRecoverySpecification": {
+                          "pointInTimeRecoveryEnabled": false
+                        },
+                        "tableName": "supply-chain-cog-users-dev"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/UsersTable/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "AnalysisTable": {
+                "id": "AnalysisTable",
+                "path": "supply-chain-cog-dev/DynamoDBTables/AnalysisTable",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/AnalysisTable/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "id",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "createdAt",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "userId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "locationId",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "globalSecondaryIndexes": [
+                          {
+                            "indexName": "user-index",
+                            "keySchema": [
+                              {
+                                "attributeName": "userId",
+                                "keyType": "HASH"
+                              },
+                              {
+                                "attributeName": "createdAt",
+                                "keyType": "RANGE"
+                              }
+                            ],
+                            "projection": {
+                              "projectionType": "ALL"
+                            }
+                          },
+                          {
+                            "indexName": "location-index",
+                            "keySchema": [
+                              {
+                                "attributeName": "locationId",
+                                "keyType": "HASH"
+                              },
+                              {
+                                "attributeName": "createdAt",
+                                "keyType": "RANGE"
+                              }
+                            ],
+                            "projection": {
+                              "projectionType": "ALL"
+                            }
+                          }
+                        ],
+                        "keySchema": [
+                          {
+                            "attributeName": "id",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "createdAt",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "pointInTimeRecoverySpecification": {
+                          "pointInTimeRecoveryEnabled": false
+                        },
+                        "tableName": "supply-chain-cog-analysis-dev",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/AnalysisTable/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "ScenariosTable": {
+                "id": "ScenariosTable",
+                "path": "supply-chain-cog-dev/DynamoDBTables/ScenariosTable",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/ScenariosTable/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "id",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "createdAt",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "userId",
+                            "attributeType": "S"
+                          },
+                          {
+                            "attributeName": "businessDimension",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "globalSecondaryIndexes": [
+                          {
+                            "indexName": "user-index",
+                            "keySchema": [
+                              {
+                                "attributeName": "userId",
+                                "keyType": "HASH"
+                              },
+                              {
+                                "attributeName": "createdAt",
+                                "keyType": "RANGE"
+                              }
+                            ],
+                            "projection": {
+                              "projectionType": "ALL"
+                            }
+                          },
+                          {
+                            "indexName": "business-dimension-index",
+                            "keySchema": [
+                              {
+                                "attributeName": "businessDimension",
+                                "keyType": "HASH"
+                              },
+                              {
+                                "attributeName": "createdAt",
+                                "keyType": "RANGE"
+                              }
+                            ],
+                            "projection": {
+                              "projectionType": "ALL"
+                            }
+                          }
+                        ],
+                        "keySchema": [
+                          {
+                            "attributeName": "id",
+                            "keyType": "HASH"
+                          },
+                          {
+                            "attributeName": "createdAt",
+                            "keyType": "RANGE"
+                          }
+                        ],
+                        "pointInTimeRecoverySpecification": {
+                          "pointInTimeRecoveryEnabled": false
+                        },
+                        "tableName": "supply-chain-cog-scenarios-dev",
+                        "timeToLiveSpecification": {
+                          "attributeName": "ttl",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "supply-chain-cog-dev/DynamoDBTables/ScenariosTable/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "UsersTableName": {
+                "id": "UsersTableName",
+                "path": "supply-chain-cog-dev/DynamoDBTables/UsersTableName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "AnalysisTableName": {
+                "id": "AnalysisTableName",
+                "path": "supply-chain-cog-dev/DynamoDBTables/AnalysisTableName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "ScenariosTableName": {
+                "id": "ScenariosTableName",
+                "path": "supply-chain-cog-dev/DynamoDBTables/ScenariosTableName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "UserPool": {
+            "id": "UserPool",
+            "path": "supply-chain-cog-dev/UserPool",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "supply-chain-cog-dev/UserPool/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Cognito::UserPool",
+                  "aws:cdk:cloudformation:props": {
+                    "accountRecoverySetting": {
+                      "recoveryMechanisms": [
+                        {
+                          "name": "verified_email",
+                          "priority": 1
+                        }
+                      ]
+                    },
+                    "adminCreateUserConfig": {
+                      "allowAdminCreateUserOnly": false
+                    },
+                    "autoVerifiedAttributes": [
+                      "email"
+                    ],
+                    "emailVerificationMessage": "The verification code to your new account is {####}",
+                    "emailVerificationSubject": "Verify your new account",
+                    "policies": {
+                      "passwordPolicy": {
+                        "minimumLength": 8,
+                        "requireLowercase": true,
+                        "requireUppercase": true,
+                        "requireNumbers": true,
+                        "requireSymbols": true
+                      }
+                    },
+                    "schema": [
+                      {
+                        "name": "email",
+                        "mutable": true,
+                        "required": true
+                      },
+                      {
+                        "name": "name",
+                        "mutable": true,
+                        "required": false
+                      }
+                    ],
+                    "smsVerificationMessage": "The verification code to your new account is {####}",
+                    "userPoolName": "supply-chain-cog-user-pool-dev",
+                    "verificationMessageTemplate": {
+                      "defaultEmailOption": "CONFIRM_WITH_CODE",
+                      "emailMessage": "The verification code to your new account is {####}",
+                      "emailSubject": "Verify your new account",
+                      "smsMessage": "The verification code to your new account is {####}"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.CfnUserPool",
+                  "version": "2.181.1"
+                }
+              },
+              "UserPoolClient": {
+                "id": "UserPoolClient",
+                "path": "supply-chain-cog-dev/UserPool/UserPoolClient",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/UserPool/UserPoolClient/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Cognito::UserPoolClient",
+                      "aws:cdk:cloudformation:props": {
+                        "allowedOAuthFlows": [
+                          "implicit",
+                          "code"
+                        ],
+                        "allowedOAuthFlowsUserPoolClient": true,
+                        "allowedOAuthScopes": [
+                          "email",
+                          "openid",
+                          "profile"
+                        ],
+                        "callbackUrLs": [
+                          "http://localhost:3000/api/auth/callback/cognito"
+                        ],
+                        "clientName": "supply-chain-cog-client-dev",
+                        "explicitAuthFlows": [
+                          "ALLOW_USER_PASSWORD_AUTH",
+                          "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+                          "ALLOW_USER_SRP_AUTH",
+                          "ALLOW_REFRESH_TOKEN_AUTH"
+                        ],
+                        "generateSecret": false,
+                        "logoutUrLs": [
+                          "http://localhost:3000"
+                        ],
+                        "supportedIdentityProviders": [
+                          "COGNITO"
+                        ],
+                        "userPoolId": {
+                          "Ref": "UserPool6BA7E5F2"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_cognito.CfnUserPoolClient",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cognito.UserPoolClient",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cognito.UserPool",
+              "version": "2.181.1",
+              "metadata": []
+            }
+          },
+          "LambdaFunctions": {
+            "id": "LambdaFunctions",
+            "path": "supply-chain-cog-dev/LambdaFunctions",
+            "children": {
+              "OpenCageApiKey": {
+                "id": "OpenCageApiKey",
+                "path": "supply-chain-cog-dev/LambdaFunctions/OpenCageApiKey",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/OpenCageApiKey/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "API key for OpenCage Geocoding service",
+                        "generateSecretString": {},
+                        "name": "supply-chain-cog/opencage-api-key-dev"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "LambdaExecutionRole": {
+                "id": "LambdaExecutionRole",
+                "path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole",
+                "children": {
+                  "ImportLambdaExecutionRole": {
+                    "id": "ImportLambdaExecutionRole",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/ImportLambdaExecutionRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ],
+                        "roleName": "supply-chain-cog-lambda-role-dev"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/LambdaExecutionRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*",
+                                    "s3:DeleteObject*",
+                                    "s3:PutObject",
+                                    "s3:PutObjectLegalHold",
+                                    "s3:PutObjectRetention",
+                                    "s3:PutObjectTagging",
+                                    "s3:PutObjectVersionTagging",
+                                    "s3:Abort*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "S3BucketsCSVUploadsBucketD0AD0A77",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "S3BucketsCSVUploadsBucketD0AD0A77",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetObject*",
+                                    "s3:GetBucket*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "S3BucketsPublicAssetsBucketA654415B",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "S3BucketsPublicAssetsBucketA654415B",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DynamoDBTablesUsersTable413E28CF",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DynamoDBTablesAnalysisTable8AFEBDD5",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "DynamoDBTablesAnalysisTable8AFEBDD5",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/index/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DynamoDBTablesScenariosTable71D451E1",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "DynamoDBTablesScenariosTable71D451E1",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/index/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "secretsmanager:GetSecretValue",
+                                    "secretsmanager:DescribeSecret"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "LambdaFunctionsLambdaExecutionRoleDefaultPolicy817C614E",
+                            "roles": [
+                              {
+                                "Ref": "LambdaFunctionsLambdaExecutionRole85D79140"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.181.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "SharedLayer": {
+                "id": "SharedLayer",
+                "path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.181.1"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/SharedLayer/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::LayerVersion",
+                      "aws:cdk:cloudformation:props": {
+                        "compatibleRuntimes": [
+                          "nodejs18.x"
+                        ],
+                        "content": {
+                          "s3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+                          "s3Key": "93b99e790463ce3ee70210e9b6f6b50834eff40adca1098afaa1863e7299ab0a.zip"
+                        },
+                        "description": "Shared utilities for Lambda functions"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnLayerVersion",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.LayerVersion",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "CogAnalysisFunction": {
+                "id": "CogAnalysisFunction",
+                "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.181.1"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunction/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+                          "s3Key": "a032dfd67de037d3a53c1995368f816b90d72faa846a20268163f6c990fd8248.zip"
+                        },
+                        "environment": {
+                          "variables": {
+                            "ENVIRONMENT": "dev",
+                            "USERS_TABLE": {
+                              "Ref": "DynamoDBTablesUsersTable413E28CF"
+                            },
+                            "ANALYSIS_TABLE": {
+                              "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+                            },
+                            "SCENARIOS_TABLE": {
+                              "Ref": "DynamoDBTablesScenariosTable71D451E1"
+                            },
+                            "CSV_BUCKET": {
+                              "Ref": "S3BucketsCSVUploadsBucketD0AD0A77"
+                            },
+                            "CACHE_RESULTS": "true",
+                            "MAX_LOCATIONS": "10000"
+                          }
+                        },
+                        "functionName": "supply-chain-cog-cog-analysis-dev",
+                        "handler": "index.handler",
+                        "layers": [
+                          {
+                            "Ref": "LambdaFunctionsSharedLayer7706F079"
+                          }
+                        ],
+                        "memorySize": 512,
+                        "role": {
+                          "Fn::GetAtt": [
+                            "LambdaFunctionsLambdaExecutionRole85D79140",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs18.x",
+                        "timeout": 60
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.Function",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "GeocodingFunction": {
+                "id": "GeocodingFunction",
+                "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction",
+                "children": {
+                  "Code": {
+                    "id": "Code",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.AssetStaging",
+                          "version": "2.181.1"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Code/AssetBucket",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                      "version": "2.181.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunction/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": "cdk-hnb659fds-assets-615299755994-us-east-1",
+                          "s3Key": "c55b7419389de4e42b2577f0fb4a827459669f6b1e9c23847651d6e7bfa17d52.zip"
+                        },
+                        "environment": {
+                          "variables": {
+                            "ENVIRONMENT": "dev",
+                            "USERS_TABLE": {
+                              "Ref": "DynamoDBTablesUsersTable413E28CF"
+                            },
+                            "ANALYSIS_TABLE": {
+                              "Ref": "DynamoDBTablesAnalysisTable8AFEBDD5"
+                            },
+                            "SCENARIOS_TABLE": {
+                              "Ref": "DynamoDBTablesScenariosTable71D451E1"
+                            },
+                            "CSV_BUCKET": {
+                              "Ref": "S3BucketsCSVUploadsBucketD0AD0A77"
+                            },
+                            "OPENCAGE_SECRET_NAME": {
+                              "Fn::Join": [
+                                "-",
+                                [
+                                  {
+                                    "Fn::Select": [
+                                      0,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Select": [
+                                      1,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Select": [
+                                      2,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Select": [
+                                      3,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Select": [
+                                      4,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "Fn::Select": [
+                                      5,
+                                      {
+                                        "Fn::Split": [
+                                          "-",
+                                          {
+                                            "Fn::Select": [
+                                              6,
+                                              {
+                                                "Fn::Split": [
+                                                  ":",
+                                                  {
+                                                    "Ref": "LambdaFunctionsOpenCageApiKey5F9E9431"
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              ]
+                            },
+                            "CACHE_RESULTS": "true",
+                            "MAX_BATCH_SIZE": "25",
+                            "CACHE_TTL_DAYS": "30"
+                          }
+                        },
+                        "functionName": "supply-chain-cog-geocoding-dev",
+                        "handler": "index.handler",
+                        "layers": [
+                          {
+                            "Ref": "LambdaFunctionsSharedLayer7706F079"
+                          }
+                        ],
+                        "memorySize": 256,
+                        "role": {
+                          "Fn::GetAtt": [
+                            "LambdaFunctionsLambdaExecutionRole85D79140",
+                            "Arn"
+                          ]
+                        },
+                        "runtime": "nodejs18.x",
+                        "timeout": 30
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.Function",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "CogAnalysisFunctionName": {
+                "id": "CogAnalysisFunctionName",
+                "path": "supply-chain-cog-dev/LambdaFunctions/CogAnalysisFunctionName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "GeocodingFunctionName": {
+                "id": "GeocodingFunctionName",
+                "path": "supply-chain-cog-dev/LambdaFunctions/GeocodingFunctionName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "OpenCageSecretName": {
+                "id": "OpenCageSecretName",
+                "path": "supply-chain-cog-dev/LambdaFunctions/OpenCageSecretName",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "SupplyChainApi": {
+            "id": "SupplyChainApi",
+            "path": "supply-chain-cog-dev/SupplyChainApi",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "supply-chain-cog-dev/SupplyChainApi/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "API for Supply Chain Optimization Tool",
+                    "name": "supply-chain-cog-api-dev"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.181.1"
+                }
+              },
+              "CloudWatchRole": {
+                "id": "CloudWatchRole",
+                "path": "supply-chain-cog-dev/SupplyChainApi/CloudWatchRole",
+                "children": {
+                  "ImportCloudWatchRole": {
+                    "id": "ImportCloudWatchRole",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/CloudWatchRole/ImportCloudWatchRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/CloudWatchRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "apigateway.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "Account": {
+                "id": "Account",
+                "path": "supply-chain-cog-dev/SupplyChainApi/Account",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Account",
+                  "aws:cdk:cloudformation:props": {
+                    "cloudWatchRoleArn": {
+                      "Fn::GetAtt": [
+                        "SupplyChainApiCloudWatchRole284EB9E9",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAccount",
+                  "version": "2.181.1"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "supply-chain-cog-dev/SupplyChainApi/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "API for Supply Chain Optimization Tool",
+                        "restApiId": {
+                          "Ref": "SupplyChainApiF2EEF487"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "DeploymentStage.prod": {
+                "id": "DeploymentStage.prod",
+                "path": "supply-chain-cog-dev/SupplyChainApi/DeploymentStage.prod",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/DeploymentStage.prod/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "deploymentId": {
+                          "Ref": "SupplyChainApiDeployment1D9099DE8c37354121f809c677ebea0ba90d868d"
+                        },
+                        "restApiId": {
+                          "Ref": "SupplyChainApiF2EEF487"
+                        },
+                        "stageName": "prod"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.181.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "supply-chain-cog-dev/SupplyChainApi/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.181.1"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "supply-chain-cog-dev/SupplyChainApi/Default",
+                "children": {
+                  "OPTIONS": {
+                    "id": "OPTIONS",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/Default/OPTIONS",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/OPTIONS/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                          "aws:cdk:cloudformation:props": {
+                            "apiKeyRequired": false,
+                            "authorizationType": "NONE",
+                            "httpMethod": "OPTIONS",
+                            "integration": {
+                              "type": "MOCK",
+                              "requestTemplates": {
+                                "application/json": "{ statusCode: 200 }"
+                              },
+                              "integrationResponses": [
+                                {
+                                  "statusCode": "204",
+                                  "responseParameters": {
+                                    "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                    "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                    "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                    "method.response.header.Access-Control-Max-Age": "'86400'"
+                                  }
+                                }
+                              ]
+                            },
+                            "methodResponses": [
+                              {
+                                "statusCode": "204",
+                                "responseParameters": {
+                                  "method.response.header.Access-Control-Allow-Headers": true,
+                                  "method.response.header.Access-Control-Allow-Origin": true,
+                                  "method.response.header.Access-Control-Allow-Methods": true,
+                                  "method.response.header.Access-Control-Max-Age": true
+                                }
+                              }
+                            ],
+                            "resourceId": {
+                              "Fn::GetAtt": [
+                                "SupplyChainApiF2EEF487",
+                                "RootResourceId"
+                              ]
+                            },
+                            "restApiId": {
+                              "Ref": "SupplyChainApiF2EEF487"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                          "version": "2.181.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  },
+                  "analysis": {
+                    "id": "analysis",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "SupplyChainApiF2EEF487",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "analysis",
+                            "restApiId": {
+                              "Ref": "SupplyChainApiF2EEF487"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.181.1"
+                        }
+                      },
+                      "OPTIONS": {
+                        "id": "OPTIONS",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/OPTIONS",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/OPTIONS/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": false,
+                                "authorizationType": "NONE",
+                                "httpMethod": "OPTIONS",
+                                "integration": {
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ statusCode: 200 }"
+                                  },
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "204",
+                                      "responseParameters": {
+                                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                        "method.response.header.Access-Control-Max-Age": "'86400'"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "204",
+                                    "responseParameters": {
+                                      "method.response.header.Access-Control-Allow-Headers": true,
+                                      "method.response.header.Access-Control-Allow-Origin": true,
+                                      "method.response.header.Access-Control-Allow-Methods": true,
+                                      "method.response.header.Access-Control-Max-Age": true
+                                    }
+                                  }
+                                ],
+                                "resourceId": {
+                                  "Ref": "SupplyChainApianalysis5CAF06DA"
+                                },
+                                "restApiId": {
+                                  "Ref": "SupplyChainApiF2EEF487"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.181.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST",
+                        "children": {
+                          "ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis": {
+                            "id": "ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "LambdaFunctionsCogAnalysisFunction573EF7C4",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:us-east-1:615299755994:",
+                                      {
+                                        "Ref": "SupplyChainApiF2EEF487"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+                                      },
+                                      "/POST/analysis"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.181.1"
+                            }
+                          },
+                          "ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis": {
+                            "id": "ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..analysis",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "LambdaFunctionsCogAnalysisFunction573EF7C4",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:us-east-1:615299755994:",
+                                      {
+                                        "Ref": "SupplyChainApiF2EEF487"
+                                      },
+                                      "/test-invoke-stage/POST/analysis"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.181.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/analysis/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "authorizationType": "COGNITO_USER_POOLS",
+                                "authorizerId": {
+                                  "Ref": "ApiAuthorizer68095F41"
+                                },
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "LambdaFunctionsCogAnalysisFunction573EF7C4",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "SupplyChainApianalysis5CAF06DA"
+                                },
+                                "restApiId": {
+                                  "Ref": "SupplyChainApiF2EEF487"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.181.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  },
+                  "geocoding": {
+                    "id": "geocoding",
+                    "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "SupplyChainApiF2EEF487",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "geocoding",
+                            "restApiId": {
+                              "Ref": "SupplyChainApiF2EEF487"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.181.1"
+                        }
+                      },
+                      "OPTIONS": {
+                        "id": "OPTIONS",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/OPTIONS",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/OPTIONS/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "apiKeyRequired": false,
+                                "authorizationType": "NONE",
+                                "httpMethod": "OPTIONS",
+                                "integration": {
+                                  "type": "MOCK",
+                                  "requestTemplates": {
+                                    "application/json": "{ statusCode: 200 }"
+                                  },
+                                  "integrationResponses": [
+                                    {
+                                      "statusCode": "204",
+                                      "responseParameters": {
+                                        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                                        "method.response.header.Access-Control-Allow-Origin": "'*'",
+                                        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+                                        "method.response.header.Access-Control-Max-Age": "'86400'"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "methodResponses": [
+                                  {
+                                    "statusCode": "204",
+                                    "responseParameters": {
+                                      "method.response.header.Access-Control-Allow-Headers": true,
+                                      "method.response.header.Access-Control-Allow-Origin": true,
+                                      "method.response.header.Access-Control-Allow-Methods": true,
+                                      "method.response.header.Access-Control-Max-Age": true
+                                    }
+                                  }
+                                ],
+                                "resourceId": {
+                                  "Ref": "SupplyChainApigeocodingA2004A2B"
+                                },
+                                "restApiId": {
+                                  "Ref": "SupplyChainApiF2EEF487"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.181.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST",
+                        "children": {
+                          "ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding": {
+                            "id": "ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "LambdaFunctionsGeocodingFunctionA56FC6BE",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:us-east-1:615299755994:",
+                                      {
+                                        "Ref": "SupplyChainApiF2EEF487"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "SupplyChainApiDeploymentStageprodE1CB3397"
+                                      },
+                                      "/POST/geocoding"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.181.1"
+                            }
+                          },
+                          "ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding": {
+                            "id": "ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/ApiPermission.Test.supplychaincogdevSupplyChainApi0E51D2CE.POST..geocoding",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "LambdaFunctionsGeocodingFunctionA56FC6BE",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:us-east-1:615299755994:",
+                                      {
+                                        "Ref": "SupplyChainApiF2EEF487"
+                                      },
+                                      "/test-invoke-stage/POST/geocoding"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.181.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "supply-chain-cog-dev/SupplyChainApi/Default/geocoding/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "authorizationType": "COGNITO_USER_POOLS",
+                                "authorizerId": {
+                                  "Ref": "ApiAuthorizer68095F41"
+                                },
+                                "httpMethod": "POST",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "LambdaFunctionsGeocodingFunctionA56FC6BE",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                },
+                                "resourceId": {
+                                  "Ref": "SupplyChainApigeocodingA2004A2B"
+                                },
+                                "restApiId": {
+                                  "Ref": "SupplyChainApiF2EEF487"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.181.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.181.1",
+                          "metadata": []
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.181.1",
+                      "metadata": []
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.181.1",
+                  "metadata": []
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.181.1",
+              "metadata": []
+            }
+          },
+          "ApiAuthorizer": {
+            "id": "ApiAuthorizer",
+            "path": "supply-chain-cog-dev/ApiAuthorizer",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "supply-chain-cog-dev/ApiAuthorizer/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Authorizer",
+                  "aws:cdk:cloudformation:props": {
+                    "identitySource": "method.request.header.Authorization",
+                    "name": "supplychaincogdevApiAuthorizer92F613A5",
+                    "providerArns": [
+                      {
+                        "Fn::GetAtt": [
+                          "UserPool6BA7E5F2",
+                          "Arn"
+                        ]
+                      }
+                    ],
+                    "restApiId": {
+                      "Ref": "SupplyChainApiF2EEF487"
+                    },
+                    "type": "COGNITO_USER_POOLS"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAuthorizer",
+                  "version": "2.181.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.CognitoUserPoolsAuthorizer",
+              "version": "2.181.1",
+              "metadata": []
+            }
+          },
+          "ApiUrl": {
+            "id": "ApiUrl",
+            "path": "supply-chain-cog-dev/ApiUrl",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.181.1"
+            }
+          },
+          "UserPoolId": {
+            "id": "UserPoolId",
+            "path": "supply-chain-cog-dev/UserPoolId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.181.1"
+            }
+          },
+          "UserPoolClientId": {
+            "id": "UserPoolClientId",
+            "path": "supply-chain-cog-dev/UserPoolClientId",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.181.1"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "supply-chain-cog-dev/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "supply-chain-cog-dev/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.181.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "supply-chain-cog-dev/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.181.1"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "supply-chain-cog-dev/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.181.1"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.181.1"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.4.2"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.181.1"
+    }
+  }
+}

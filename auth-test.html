@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Authentication Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.1/dist/amazon-cognito-identity.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        button, input[type="text"], input[type="password"], input[type="email"] { padding: 8px; margin: 5px 0; }
+        #tokenDisplay { word-break: break-all; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        #responseDisplay { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; white-space: pre-wrap; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Supply Chain API Authentication Test</h1>
+    
+    <div id="loginForm">
+        <h2>Log In</h2>
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Username">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Password">
+        </div>
+        <button id="loginButton">Log In</button>
+        <p>Don't have an account? <button id="showSignupButton">Sign Up</button></p>
+        <div id="loginMessage"></div>
+    </div>
+
+    <div id="newPasswordForm" class="hidden">
+        <h2>Set New Password</h2>
+        <p>You need to set a new password to continue</p>
+        <div>
+            <label for="newPasswordRequired">New Password:</label>
+            <input type="password" id="newPasswordRequired" placeholder="New Password">
+        </div>
+        <button id="setNewPasswordButton">Set New Password</button>
+        <div id="newPasswordMessage"></div>
+    </div>
+
+    <div id="signupForm" class="hidden">
+        <h2>Sign Up</h2>
+        <div>
+            <label for="newUsername">Username:</label>
+            <input type="text" id="newUsername" placeholder="Username">
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Email">
+        </div>
+        <div>
+            <label for="newPassword">Password:</label>
+            <input type="password" id="newPassword" placeholder="Password">
+        </div>
+        <button id="signupButton">Sign Up</button>
+        <p>Already have an account? <button id="showLoginButton">Log In</button></p>
+        <div id="signupMessage"></div>
+    </div>
+
+    <div id="verifyForm" class="hidden">
+        <h2>Verification</h2>
+        <p>Please check your email for a verification code</p>
+        <div>
+            <label for="verificationCode">Verification Code:</label>
+            <input type="text" id="verificationCode" placeholder="Verification Code">
+        </div>
+        <button id="verifyButton">Verify</button>
+        <div id="verifyMessage"></div>
+    </div>
+
+    <div id="authStatus" class="hidden">
+        <h2>Authentication Status</h2>
+        <p id="authMessage">You are not logged in.</p>
+        <button id="logoutButton" class="hidden">Log Out</button>
+    </div>
+
+    <div id="apiTest" class="hidden">
+        <h2>API Test</h2>
+        <div>
+            <label for="apiEndpoint">API Endpoint:</label>
+            <input type="text" id="apiEndpoint" value="https://ym24re3hz0.execute-api.us-east-1.amazonaws.com/prod/" placeholder="API URL">
+        </div>
+        <button id="testApiButton">Test API</button>
+        <div>
+            <h3>ID Token:</h3>
+            <div id="tokenDisplay"></div>
+            <h3>API Response:</h3>
+            <div id="responseDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        // Cognito Configuration
+        const REGION = 'us-east-1';
+        const USER_POOL_ID = 'us-east-1_aopszrqPj';
+        const CLIENT_ID = 'ddhf00hntc4aojev6hmb1o4gv';
+        
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const newPasswordForm = document.getElementById('newPasswordForm');
+        const signupForm = document.getElementById('signupForm');
+        const verifyForm = document.getElementById('verifyForm');
+        const authStatus = document.getElementById('authStatus');
+        const apiTest = document.getElementById('apiTest');
+        const tokenDisplay = document.getElementById('tokenDisplay');
+        const responseDisplay = document.getElementById('responseDisplay');
+        const authMessage = document.getElementById('authMessage');
+        
+        // Global variables
+        let currentUser = null;
+        let cognitoUserTemp = null;
+        
+        // Initialize User Pool
+        const poolData = {
+            UserPoolId: USER_POOL_ID,
+            ClientId: CLIENT_ID
+        };
+        const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+        
+        // Check if user is already logged in
+        currentUser = userPool.getCurrentUser();
+        if (currentUser != null) {
+            currentUser.getSession((err, session) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (session.isValid()) {
+                    completeLogin(session);
+                }
+            });
+        }
+        
+        // Show/Hide UI Elements
+        document.getElementById('showSignupButton').addEventListener('click', () => {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        });
+        
+        document.getElementById('showLoginButton').addEventListener('click', () => {
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        
+        // Sign Up
+        document.getElementById('signupButton').addEventListener('click', () => {
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('newPassword').value;
+            const signupMessage = document.getElementById('signupMessage');
+            
+            if (!username || !email || !password) {
+                signupMessage.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            const attributeList = [
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: 'email',
+                    Value: email
+                })
+            ];
+            
+            userPool.signUp(username, password, attributeList, null, (err, result) => {
+                if (err) {
+                    signupMessage.textContent = err.message || JSON.stringify(err);
+                    return;
+                }
+                
+                signupForm.classList.add('hidden');
+                verifyForm.classList.remove('hidden');
+                document.getElementById('verifyMessage').textContent = `Verification code sent to ${email}`;
+            });
+        });
+        
+        // Verify User
+        document.getElementById('verifyButton').addEventListener('click', () => {
+            const username = document.getElementById('newUsername').value;
+            const code = document.getElementById('verificationCode').value;
+            const verifyMessage = document.getElementById('verifyMessage');
+            
+            if (!code) {
+                verifyMessage.textContent = 'Please enter the verification code';
+                return;
+            }
+            
+            const userData = {
+                Username: username,
+                Pool: userPool
+            };
+            
+            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+            
+            cognitoUser.confirmRegistration(code, true, (err, result) => {
+                if (err) {
+                    verifyMessage.textContent = err.message || JSON.stringify(err);
+                    return;
+                }
+                
+                verifyMessage.textContent = 'Verification successful! You can now log in.';
+                setTimeout(() => {
+                    verifyForm.classList.add('hidden');
+                    loginForm.classList.remove('hidden');
+                }, 2000);
+            });
+        });
+        
+        // Log In
+        document.getElementById('loginButton').addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginMessage = document.getElementById('loginMessage');
+            
+            if (!username || !password) {
+                loginMessage.textContent = 'Please enter username and password';
+                return;
+            }
+            
+            const authenticationData = {
+                Username: username,
+                Password: password
+            };
+            
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+            
+            const userData = {
+                Username: username,
+                Pool: userPool
+            };
+            
+            cognitoUserTemp = new AmazonCognitoIdentity.CognitoUser(userData);
+            
+            cognitoUserTemp.authenticateUser(authenticationDetails, {
+                onSuccess: function(session) {
+                    completeLogin(session);
+                },
+                onFailure: function(err) {
+                    loginMessage.textContent = err.message || JSON.stringify(err);
+                },
+                newPasswordRequired: function(userAttributes, requiredAttributes) {
+                    // User needs to set a new password
+                    loginForm.classList.add('hidden');
+                    newPasswordForm.classList.remove('hidden');
+                }
+            });
+        });
+        
+        // Set New Password (for first login)
+        document.getElementById('setNewPasswordButton').addEventListener('click', () => {
+            const newPassword = document.getElementById('newPasswordRequired').value;
+            const newPasswordMessage = document.getElementById('newPasswordMessage');
+            
+            if (!newPassword) {
+                newPasswordMessage.textContent = 'Please enter a new password';
+                return;
+            }
+            
+            if (!cognitoUserTemp) {
+                newPasswordMessage.textContent = 'Authentication error. Please try logging in again.';
+                return;
+            }
+            
+            // This will set the new password and complete the login process
+            cognitoUserTemp.completeNewPasswordChallenge(newPassword, {}, {
+                onSuccess: function(session) {
+                    completeLogin(session);
+                },
+                onFailure: function(err) {
+                    newPasswordMessage.textContent = err.message || JSON.stringify(err);
+                }
+            });
+        });
+        
+        // Log Out
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            if (currentUser) {
+                currentUser.signOut();
+                currentUser = null;
+                
+                // Reset UI
+                loginForm.classList.remove('hidden');
+                authStatus.classList.add('hidden');
+                apiTest.classList.add('hidden');
+                document.getElementById('logoutButton').classList.add('hidden');
+                authMessage.textContent = 'You have been logged out.';
+            }
+        });
+        
+        // Test API
+        document.getElementById('testApiButton').addEventListener('click', async () => {
+            console.log("Test API button clicked");
+            responseDisplay.textContent = "Making API request...";
+            
+            if (!currentUser) {
+                responseDisplay.textContent = 'You must be logged in to test the API';
+                return;
+            }
+            
+            currentUser.getSession((err, session) => {
+                if (err) {
+                    console.error("Session error:", err);
+                    responseDisplay.textContent = `Session error: ${err.message || JSON.stringify(err)}`;
+                    return;
+                }
+                
+                const idToken = session.getIdToken().getJwtToken();
+                tokenDisplay.textContent = idToken;
+                console.log("Got ID token, length:", idToken.length);
+                
+                // Get access token instead of ID token for API calls
+                const accessToken = session.getAccessToken().getJwtToken();
+                console.log("Got Access token, length:", accessToken.length);
+                
+                // Get API endpoint
+                const apiEndpoint = document.getElementById('apiEndpoint').value.trim();
+                console.log("Making request to:", apiEndpoint);
+                
+                // Try adding a specific endpoint
+                const testEndpoint = apiEndpoint + (apiEndpoint.endsWith('/') ? 'geocode' : '/geocode');
+                console.log("Testing specific endpoint:", testEndpoint);
+                
+                // Add a dropdown for test options
+                const testTypeSelect = document.createElement('select');
+                testTypeSelect.id = 'testType';
+                const options = [
+                    { value: 'get', text: 'GET with Access Token' },
+                    { value: 'getid', text: 'GET with ID Token' },
+                    { value: 'post', text: 'POST Geocode Request' }
+                ];
+                
+                options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.text;
+                    testTypeSelect.appendChild(opt);
+                });
+                
+                // Get the selected test type
+                const testType = 'post'; // Default to POST for testing
+                
+                let fetchOptions = {};
+                
+                if (testType === 'get') {
+                    // GET with Access Token
+                    fetchOptions = {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    };
+                } else if (testType === 'getid') {
+                    // GET with ID Token
+                    fetchOptions = {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${idToken}`
+                        }
+                    };
+                } else if (testType === 'post') {
+                    // POST with sample data
+                    const sampleData = {
+                        address: "1600 Pennsylvania Avenue, Washington DC",
+                        userId: "testuser",
+                        cacheResults: true
+                    };
+                    
+                    fetchOptions = {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(sampleData)
+                    };
+                }
+                
+                // Make API call
+                console.log("Fetch options:", fetchOptions);
+                fetch(testEndpoint, fetchOptions)
+                .then(response => {
+                    console.log("API Response status:", response.status);
+                    responseDisplay.textContent = `Response status: ${response.status} ${response.statusText}\n\nFetching body...`;
+                    return response.text();
+                })
+                .then(data => {
+                    console.log("API Response data length:", data.length);
+                    try {
+                        const jsonData = JSON.parse(data);
+                        responseDisplay.textContent = JSON.stringify(jsonData, null, 2);
+                    } catch (e) {
+                        responseDisplay.textContent = data || "Empty response";
+                    }
+                })
+                .catch(error => {
+                    console.error("API request error:", error);
+                    responseDisplay.textContent = `Error: ${error.message || JSON.stringify(error)}`;
+                });
+            });
+        });
+        
+        // Helper function to update UI after successful login
+        function completeLogin(session) {
+            loginForm.classList.add('hidden');
+            newPasswordForm.classList.add('hidden');
+            signupForm.classList.add('hidden');
+            verifyForm.classList.add('hidden');
+            authStatus.classList.remove('hidden');
+            apiTest.classList.remove('hidden');
+            document.getElementById('logoutButton').classList.remove('hidden');
+            
+            const idToken = session.getIdToken().getJwtToken();
+            tokenDisplay.textContent = idToken;
+            
+            currentUser = userPool.getCurrentUser();
+            authMessage.textContent = `You are logged in as ${currentUser.getUsername()}`;
+        }
+
+        // Test API function
+        function testAPI() {
+            const apiUrl = 'https://khnj3r1ix2.execute-api.us-east-1.amazonaws.com/test/test';
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html> 

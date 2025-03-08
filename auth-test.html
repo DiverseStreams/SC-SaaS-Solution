@@ -11,6 +11,7 @@
         #tokenDisplay { word-break: break-all; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
         #responseDisplay { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; white-space: pre-wrap; }
         .hidden { display: none; }
+        select { padding: 8px; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -82,11 +83,19 @@
         <h2>API Test</h2>
         <div>
             <label for="apiEndpoint">API Endpoint:</label>
-            <input type="text" id="apiEndpoint" value="https://ym24re3hz0.execute-api.us-east-1.amazonaws.com/prod/" placeholder="API URL">
+            <input type="text" id="apiEndpoint" value="https://your-api-id.execute-api.us-east-1.amazonaws.com/auth/geocode" placeholder="API URL">
+        </div>
+        <div>
+            <label for="testType">Request Type:</label>
+            <select id="testType">
+                <option value="get">GET with Access Token</option>
+                <option value="getid">GET with ID Token</option>
+                <option value="post" selected>POST Geocode Request</option>
+            </select>
         </div>
         <button id="testApiButton">Test API</button>
         <div>
-            <h3>ID Token:</h3>
+            <h3>Token:</h3>
             <div id="tokenDisplay"></div>
             <h3>API Response:</h3>
             <div id="responseDisplay"></div>
@@ -109,6 +118,7 @@
         const tokenDisplay = document.getElementById('tokenDisplay');
         const responseDisplay = document.getElementById('responseDisplay');
         const authMessage = document.getElementById('authMessage');
+        const testTypeSelect = document.getElementById('testType');
         
         // Global variables
         let currentUser = null;
@@ -308,41 +318,17 @@
                 }
                 
                 const idToken = session.getIdToken().getJwtToken();
-                tokenDisplay.textContent = idToken;
-                console.log("Got ID token, length:", idToken.length);
-                
-                // Get access token instead of ID token for API calls
                 const accessToken = session.getAccessToken().getJwtToken();
-                console.log("Got Access token, length:", accessToken.length);
                 
                 // Get API endpoint
                 const apiEndpoint = document.getElementById('apiEndpoint').value.trim();
                 console.log("Making request to:", apiEndpoint);
                 
-                // Try adding a specific endpoint
-                const testEndpoint = apiEndpoint + (apiEndpoint.endsWith('/') ? 'geocode' : '/geocode');
-                console.log("Testing specific endpoint:", testEndpoint);
-                
-                // Add a dropdown for test options
-                const testTypeSelect = document.createElement('select');
-                testTypeSelect.id = 'testType';
-                const options = [
-                    { value: 'get', text: 'GET with Access Token' },
-                    { value: 'getid', text: 'GET with ID Token' },
-                    { value: 'post', text: 'POST Geocode Request' }
-                ];
-                
-                options.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option.value;
-                    opt.textContent = option.text;
-                    testTypeSelect.appendChild(opt);
-                });
-                
                 // Get the selected test type
-                const testType = 'post'; // Default to POST for testing
+                const testType = testTypeSelect.value;
                 
                 let fetchOptions = {};
+                let displayToken = '';
                 
                 if (testType === 'get') {
                     // GET with Access Token
@@ -352,6 +338,7 @@
                             'Authorization': `Bearer ${accessToken}`
                         }
                     };
+                    displayToken = accessToken;
                 } else if (testType === 'getid') {
                     // GET with ID Token
                     fetchOptions = {
@@ -360,6 +347,7 @@
                             'Authorization': `Bearer ${idToken}`
                         }
                     };
+                    displayToken = idToken;
                 } else if (testType === 'post') {
                     // POST with sample data
                     const sampleData = {
@@ -376,11 +364,15 @@
                         },
                         body: JSON.stringify(sampleData)
                     };
+                    displayToken = accessToken;
                 }
+                
+                // Display the token being used
+                tokenDisplay.textContent = displayToken;
                 
                 // Make API call
                 console.log("Fetch options:", fetchOptions);
-                fetch(testEndpoint, fetchOptions)
+                fetch(apiEndpoint, fetchOptions)
                 .then(response => {
                     console.log("API Response status:", response.status);
                     responseDisplay.textContent = `Response status: ${response.status} ${response.statusText}\n\nFetching body...`;
@@ -417,19 +409,6 @@
             
             currentUser = userPool.getCurrentUser();
             authMessage.textContent = `You are logged in as ${currentUser.getUsername()}`;
-        }
-
-        // Test API function
-        function testAPI() {
-            const apiUrl = 'https://khnj3r1ix2.execute-api.us-east-1.amazonaws.com/test/test';
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
-                })
-                .catch(error => {
-                    document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
-                });
         }
     </script>
 </body>

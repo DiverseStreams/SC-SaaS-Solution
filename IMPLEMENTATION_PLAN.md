@@ -111,4 +111,70 @@ This plan adapts our original implementation approach to leverage the nextjs/saa
   - **Files**:
     - `lib/geocoding.ts`: Geocoding utilities
     - `app/components/map/Geocoder.tsx`: Geocoding component
-    - `
+
+## Security Updates Roadmap (Post-MVP)
+
+### High Priority (Sprint Following MVP)
+1. Excel Processing Security
+   - Migrate from xlsx to ExcelJS
+   - Impact: Core data processing functionality
+   - Status: ExcelJS installed, migration pending
+   - Testing Needs:
+     - Data import validation
+     - Export functionality
+     - Large file handling
+     - Client data format compatibility
+
+### Low Priority (Post-BETA)
+1. Development Environment Security
+   - esbuild vulnerabilities (dev-only)
+   - drizzle-kit dependency updates
+   - Local development server security
+   - Status: Identified, no production impact
+
+## Repository Consolidation Verification
+
+### 1. Structure Verification
+- [x] Initial consolidation completed
+- [ ] Directory structure documented
+- [ ] Component relationships mapped
+- [ ] Configuration files verified
+
+### 2. Dependency Alignment
+- [ ] AWS SDK versions standardized
+- [ ] Core dependencies verified
+- [ ] Development dependencies checked
+- [ ] Package.json cleanup
+
+### 3. Next Steps (In Order)
+1. Update AWS SDK packages:
+   ```bash
+   npm install @aws-sdk/client-cognito-identity@latest @aws-sdk/client-lambda@latest
+   ```
+   Expected time: 15-20 minutes
+   Validation: Check package.json versions match
+
+2. Document Repository Structure:
+   ```bash
+   # Install tree if not present
+   brew install tree
+   
+   # Generate structure documentation
+   tree -I 'node_modules|.next|.git' > STRUCTURE.md
+   ```
+   Expected time: 10-15 minutes
+   Validation: Review STRUCTURE.md for completeness
+
+3. Document Dependencies:
+   ```bash
+   npm list --prod --depth=0 > DEPENDENCIES.md
+   ```
+   Expected time: 5-10 minutes
+   Validation: Check DEPENDENCIES.md for alignment
+
+### 4. Validation Checklist
+- [ ] All AWS SDK packages on same version
+- [ ] No missing dependencies
+- [ ] All core components present
+- [ ] Configuration files properly placed
+- [ ] No duplicate functionality

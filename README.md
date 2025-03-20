@@ -1,3 +1,18 @@
+# Supply Chain SaaS Platform
+
+## Directory Structure
+- `src/` - Core application code
+- `lambda/` - AWS Lambda functions
+- `infrastructure/` - Infrastructure as Code
+- `docs/` - Documentation
+- `tests/` - Test suites
+
+## Setup Instructions
+[Instructions here]
+
+## Development Guidelines
+[Guidelines here]
+
 # Next.js SaaS Starter
 
 This is a starter template for building a SaaS application using **Next.js** with support for authentication, Stripe integration for payments, and a dashboard for logged-in users.
